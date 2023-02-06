@@ -22,7 +22,7 @@ func main() {
 }
 ```
 
-### 1.2 命令行演示
+### 1.2 命令行
 
 ```bash
 $ go build -gcflags="-m" escape.go
@@ -70,9 +70,9 @@ $ go build -gcflags="-m" escape.go
 
 [github.com/matrixorigin/matrixone/pkg/container/types.Encode](https://github.com/matrixorigin/matrixone/blob/5c7ea0b214d824bad7bbf030a8403dd5a3b9e748/pkg/container/types/encoding.go#L74)
 
-![image-20230204162926515](../docs/image-20230204162926515.png)
+![image-20230204162926515](../../docs/image-20230204162926515.png)
 
-- 性能测试代码
+- 性能测试
 
 ```go
 // github.com/matrixorigin/matrixone/pkg/container/types/encoding_test.go
@@ -104,13 +104,13 @@ $ go tool pprof -alloc_space -flat mem.out
 (pprof) top 20
 ```
 
-![image-20230204162807782](../docs/image-20230204162807782.png)
+![image-20230204162807782](../../docs/image-20230204162807782.png)
 
 ### 1.5 参考代码
 
 [cockraoch encoding code](https://github.com/cockroachdb/cockroach/blob/5fbcd8a8deac0205c7df38e340c1eb9692854383/pkg/util/encoding/encoding.go#L180)
 
-![image-20230204170538427](../docs/image-20230204170538427.png)
+![image-20230204170538427](../../docs/image-20230204170538427.png)
 
 ### 1.6 总结提示
 
@@ -118,20 +118,5 @@ $ go tool pprof -alloc_space -flat mem.out
 
   > 自下向上（从被调用函数到调用者）返回 slice 有可能会触发内存“逃逸”
 
-- 从内存分析来看，函数 `Encode` 存在问题较多，拿来作为 escape 的例子有点牵强
-
-## 2. interface{} / any
-
-any 是 golang 1.18 版本引入的，跟 interface{} 等价。
-
-```go
-// any is an alias for interface{} and is equivalent to interface{} in all ways.
-type any = interface{}
-```
-
-- [ ] TODO
-
-## 3. Golang GC
-
-- [ ] TODO
+- 从内存分析来看，函数 `Encode` 存在问题较多，拿来作为 escape 的例子有点牵强，接下来看下 interface{} 作为函数参数的分析
 
