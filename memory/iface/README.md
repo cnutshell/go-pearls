@@ -64,7 +64,7 @@ $ go tool pprof -alloc_space -flat mem.out
 
 向类型为 `interface{}` 的变量赋值，可能会触发内存“逃逸”，出现额外的内存分配。
 
-在 Golang 中，基于接口可以实现多态，类似于 Python 支持的 `Duck Typing`。
+在 Golang 中，可以基于接口实现多态，类似于 Python 支持的 `Duck Typing`。
 
 ```go
 type Stringer interface {
@@ -76,11 +76,12 @@ func Foo(s Stringer{}) {
 }
 ```
 
-基于接口实现多态，存在这些问题：
+基于接口实现多态，主要存在这些问题：
 
-1. 丢失了类型信息；
-2. 程序行为从编译阶段转移到运行阶段，程序运行阶段不可避免地需要执行类型转换，类型断言或者反射等操作；
-3. 可能会导致“额外的”内存分配；
+1. 丢失了类型信息 ，程序行为从编译阶段转移到运行阶段；
+2. 程序运行阶段不可避免地需要执行类型转换，类型断言或者反射等操作；
+3. 为 `interface{}` 类型的变量赋值可能会导致“额外的”内存分配；
+3. [接口实现](https://github.com/golang/go/blob/3fc8ed2543091693eca514b363fcdbbe5c7f2916/src/runtime/runtime2.go#L202) 为一个“胖”指针：一个指向实际的数据，一个指向函数指针表（类似于C++ 中的虚函数表）；在 Golang 中，基于接口的函数调用，其实际的调用开销为：指针解引用（确定方法地址）+ 函数执行开销。编译器无法对其执行内联优化，也无法基于内联优化执行进一步的优化；
 
 ### 2.4 我们的代码
 
@@ -131,6 +132,9 @@ pkg: github.com/matrixorigin/matrixone/pkg/container/vector
 BenchmarkVector-8       54177700                21.40 ns/op           24 B/op          1 allocs/op
 PASS
 ok      github.com/matrixorigin/matrixone/pkg/container/vector  1.812s
+
+$ go tool pprof -alloc_space mem.out
+(pprof) top
 ```
 
 Via `go tool pprof -alloc_space mem.out`, the allocated memory lies in where we assign `unsafe.Slice` to an interface. In order to get rid of this unnecessary heap allocation, we must assign the value returned by `unsafe.Slice` to its corresponding concrete type. (In this benchmark, the corresponding concrete type of `li` should be `[]int8`. Change the type of variable `li` from `interface{}` as `[]int8`, then rerun this benchmark, you would see that here was no allocation each operation.)
