@@ -12,7 +12,7 @@
 
 `profiler` 是基于采样的，对程序性能存在一定影响。
 
-> 注意：通过 `net/http/pprof` 对线上服务执行 profiling 时，不建议修改 golang profiler 默认值，因为某些 profiler 参数的修改，例如增加 memory profile sample rate，可能会导致程序性能出现明显的降级，除非你很明确的知道可能造成的影响。
+> 注意：通过 `net/http/pprof` 对线上服务执行 profiling 时，不建议修改 golang profiler 默认值，因为某些 profiler 参数的修改，例如增加 memory profile sample rate，可能会导致程序性能出现明显的降级，除非你明确的知道可能造成的影响。
 
 > NOTE: Before you profile, you must have a stable environment to get repeatable results.
 
@@ -107,7 +107,7 @@ $ go tool trace trace.out
 
 如果 GC 组件消耗了大量的时间，程序可能分配了大量的小内存，或者分配的堆内存比较大；
 
-## 5. 流程演示
+## 5. 相关命令
 
 - Block Profiling with Unit Test
 
