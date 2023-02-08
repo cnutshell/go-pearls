@@ -6,7 +6,7 @@ import (
 	_ "net/http/pprof"
 	"runtime"
 
-	"github.com/cnutshell/go-pearls/debug/profiling"
+	"github.com/cnutshell/go-pearls/profiling"
 )
 
 func init() {

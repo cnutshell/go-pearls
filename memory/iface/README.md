@@ -73,7 +73,7 @@ type Stringer interface {
   String() string
 }
 
-func Foo(s Stringer{}) {
+func Foo(s Stringer) {
   // do some job
 }
 ```

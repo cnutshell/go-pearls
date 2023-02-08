@@ -137,7 +137,7 @@ func BenchmarkCalculateEmpty(b *testing.B) {
 运行示例代码中的测试，两个测试的结果相同：
 
 ```bash
-go test -bench Calculate
+$ go test -bench Calculate
 goos: darwin
 goarch: arm64
 pkg: github.com/cnutshell/go-pearls/benchmark
