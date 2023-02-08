@@ -5,6 +5,8 @@
 ## 2. interface{} / any
 any 是 golang 1.18 版本引入的，跟 interface{} 等价。
 
+[接口实现](https://github.com/golang/go/blob/3fc8ed2543091693eca514b363fcdbbe5c7f2916/src/runtime/runtime2.go#L202) 为一个“胖”指针：一个指向实际的数据，一个指向函数指针表（类似于C++ 中的虚函数表）。
+
 ```
 type any = interface{}
 ```
@@ -62,9 +64,9 @@ $ go tool pprof -alloc_space -flat mem.out
 
 ### 2.3 示例说明
 
-向类型为 `interface{}` 的变量赋值，可能会触发内存“逃逸”，出现额外的内存分配。
+向类型为 `interface{}` 的变量赋值，可能会触发内存“逃逸”，导致额外的内存分配。
 
-在 Golang 中，可以基于接口实现多态，类似于 Python 支持的 `Duck Typing`。
+在 Golang 中，基于接口实现多态，类似于 Python 支持的 `Duck Typing`。
 
 ```go
 type Stringer interface {
@@ -81,7 +83,7 @@ func Foo(s Stringer{}) {
 1. 丢失了类型信息 ，程序行为从编译阶段转移到运行阶段；
 2. 程序运行阶段不可避免地需要执行类型转换，类型断言或者反射等操作；
 3. 为 `interface{}` 类型的变量赋值可能会导致“额外的”内存分配；
-3. [接口实现](https://github.com/golang/go/blob/3fc8ed2543091693eca514b363fcdbbe5c7f2916/src/runtime/runtime2.go#L202) 为一个“胖”指针：一个指向实际的数据，一个指向函数指针表（类似于C++ 中的虚函数表）；在 Golang 中，基于接口的函数调用，其实际的调用开销为：指针解引用（确定方法地址）+ 函数执行开销。编译器无法对其执行内联优化，也无法基于内联优化执行进一步的优化；
+3. 在 Golang 中，基于接口的函数调用，其实际的调用开销为：指针解引用（确定方法地址）+ 函数执行开销。编译器无法对其执行内联优化，也无法基于内联优化执行进一步的优化；
 
 ### 2.4 我们的代码
 
@@ -147,7 +149,8 @@ Hence there are two ways to optimize:
 ### 2.5 总结提示
 
 1. 代码中避免使用 `interface{}` 或者 `any`，至少避免在被频繁使用的数据结构或者函数中使用；
-2. go 1.18 引入了范型，将 `interface{}` 改为范型类型，是避免额外内存分配，优化程序性能的一个选项；
+2. go 1.18 引入了范型，将 `interface{}` 改为范型类型，是避免额外内存分配，优化程序性能的一个手段；
+2. 介绍完 golang 编译器内存逃逸和 interface{}，下面介绍下 golang gc；
 
 ### 2.6 参考资料
 

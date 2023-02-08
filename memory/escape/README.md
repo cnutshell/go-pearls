@@ -35,7 +35,7 @@ $ go build -gcflags="-m" escape.go
 
 示例代码中函数 `makeBuffer` 返回的内存位于函数栈上，在 C 语言中，这是一段错误的代码，会导致未定义的行为。
 
-在 Go 语言中，这样的写法是允许的。Go 编译器会执行 escape analysis，当它发现一段内存不能放置在函数栈上时，会将这段内存放置在堆内存中。例如当一个函数向上返回栈内存时，编译器自动将这段内存放在堆内存上。
+在 Go 语言中，这样的写法是允许的。Go 编译器会执行 escape analysis：当它发现一段内存不能放置在函数栈上时，会将这段内存放置在堆内存上。例如，当一个函数向上返回栈内存时，编译器自动将这段内存放在堆内存上。
 
 另外，还存在其他一些情况会触发内存的“逃逸”：
 
@@ -92,7 +92,7 @@ func BenchmarkEncode(b *testing.B) {
 - Memory Profiling
 
 ```bash
-$ go test -run none -bench Encode$ -benchmem -bench-memprofile mem.out
+$ go test -run none -bench Encode$ -benchmem -bench -memprofile mem.out
 goos: darwin
 goarch: arm64
 pkg: github.com/matrixorigin/matrixone/pkg/container/types
@@ -108,7 +108,7 @@ $ go tool pprof -alloc_space -flat mem.out
 
 ### 1.5 参考代码
 
-[cockraoch encoding code](https://github.com/cockroachdb/cockroach/blob/5fbcd8a8deac0205c7df38e340c1eb9692854383/pkg/util/encoding/encoding.go#L180)
+[cockroach encoding code](https://github.com/cockroachdb/cockroach/blob/5fbcd8a8deac0205c7df38e340c1eb9692854383/pkg/util/encoding/encoding.go#L180)
 
 ![image-20230204170538427](../../docs/image-20230204170538427.png)
 
@@ -116,7 +116,7 @@ $ go tool pprof -alloc_space -flat mem.out
 
 - 注意函数签名设计，尽量避免因函数签名设计不合理而导致的不必要内存分配
 
-  > 自下向上（从被调用函数到调用者）返回 slice 有可能会触发内存“逃逸”
+  > 例如，自下向上（从被调用函数到调用者）返回 slice 可能会触发内存“逃逸”
 
 - 从内存分析来看，函数 `Encode` 存在问题较多，拿来作为 escape 的例子有点牵强，接下来看下 interface{} 作为函数参数的分析
 

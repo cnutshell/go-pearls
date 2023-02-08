@@ -1,6 +1,6 @@
 # 介绍
 
-关于 golang debug 和 profiling 的仓库。
+关于 golang debug 和 profiling 的仓库，从工程实践的角度出发。
 
 ## 1. 目录说明
 

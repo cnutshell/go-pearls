@@ -81,7 +81,7 @@ $ go tool pprof http://localhost:6060/debug/pprof/mutex
 
 ## 3. Golang Trace
 
-Generate a trace
+Generate a trace.
 
 ```bash
 # 1. From unit test
@@ -99,9 +99,9 @@ $ go tool trace trace.out
 
 ## 4. Profiling Hints
 
-如果大量时间消耗在函数 `runtime.mallocgc`，那么程序有可能产生了大量堆内存分配，通过 Memory Profiling 可以确定分配堆内存的代码有哪些；
+如果大量时间消耗在函数 [runtime.mallocgc](https://github.com/golang/go/blob/0b9974d3f09fe3132b4bc4aef67b839e3f84a8c8/src/runtime/malloc.go#L878)，意味着程序发生了大量堆内存分配，通过 Memory Profiling 可以确定分配堆内存的代码在哪里；
 
-如果大量的时间消耗在同步原语（例如 channel，锁等等）上，程序可能存在并发问题，通常意味着执行流程需要重新设计；
+如果大量的时间消耗在同步原语（例如 channel，锁等等）上，程序可能存在并发问题，通常意味着程序工作流程需要重新设计；
 
 如果大量的时间消耗在 `syscall.Read/Write`，那么程序有可能执行大量小 IO；
 
@@ -152,6 +152,8 @@ $ go tool pprof http://localhost:6060/debug/pprof/block
 $ curl -o trace.out  http://localhost:6060/debug/pprof/tracef
 $ go tool trace trace.out
 ```
+
+下面介绍下如何写 Benchmark。
 
 ## 参考资料
 
