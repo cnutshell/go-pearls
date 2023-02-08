@@ -15,6 +15,22 @@
     └── iface       # interface
 ```
 
+## 2. 大纲
+
+### 2.1 内存相关
+
+1. [golang 编译器内存逃逸分析](./memory/escape/README.md)
+2. [interface{} 相关介绍](./memory/iface/README.md)
+3. [golang gc 相关介绍](./memory/gc/README.md)
+
+### 2.2 性能剖析
+
+1. [golang 性能剖析介绍](./profiling/README.md)
+
+### 2.3 性能测试
+
+1. [如何写性能测试](./benchmark/README.md)
+
 ## TODO
 
 - [x] 如何写性能测试
